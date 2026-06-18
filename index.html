@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="description" content="Talleres prácticos interactivos de ciberseguridad para Centros Ferreteros: simulacro de phishing, auditoría de contraseñas y mapa de activos críticos.">
+<meta name="author" content="pumarino.cl — AI Secure Labs">
+<meta property="og:title" content="Talleres de Ciberseguridad · Centros Ferreteros · pumarino.cl">
+<meta property="og:description" content="3 talleres interactivos: Simulacro de phishing, Auditoría de contraseñas y Mapa de activos críticos. Capacitación práctica para equipos de trabajo.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#1A2844">
+<title>Talleres Prácticos · Ciberseguridad para Centros Ferreteros · pumarino.cl</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%231A2844'/%3E%3Cpolygon points='50,8 82,30 82,58 50,92 18,58 18,30' fill='none' stroke='%23B8963E' stroke-width='5'/%3E%3Cpolygon points='50,8 68,34 50,52 32,34' fill='none' stroke='%23B8963E' stroke-width='3'/%3E%3Ccircle cx='50' cy='55' r='6' fill='%23B8963E'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1A2844;--navy2:#1E3260;--gold:#B8963E;--lgold:#D4AF5A;
+  --white:#FFFFFF;--off:#F7F8FA;--gray:#8492A6;--dgray:#3D4A5C;
+  --red:#C0392B;--amber:#E67E22;--green:#1E8449;
+  --lgreen:#D5F5E3;--lred:#FDECEA;--lamber:#FEF9E7;--border:#E2E8F0;
+  --font:'Montserrat',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--off);color:var(--navy)}
+/* HEADER */
+.hdr{background:var(--navy);padding:10px 28px 0}
+.hdr-brand{color:var(--lgold);font-size:11px;font-weight:700;letter-spacing:1.2px;padding-bottom:8px;opacity:.8}
+.tabs{display:flex;gap:3px}
+.tab{padding:10px 22px;font-family:var(--font);font-size:13px;font-weight:700;color:#8492A6;background:transparent;border:none;cursor:pointer;border-radius:8px 8px 0 0;transition:all .2s;letter-spacing:.3px}
+.tab:hover{color:var(--lgold);background:rgba(255,255,255,.06)}
+.tab.active{color:var(--navy);background:var(--off)}
+.tab .bdg{display:inline-block;margin-left:7px;background:var(--gold);color:var(--navy);font-size:10px;font-weight:900;padding:1px 7px;border-radius:99px}
+/* PANELS */
+.panel{display:none;padding:28px 32px;max-width:1100px;margin:0 auto}
+.panel.active{display:block;animation:fadeIn .22s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* SECTION HEADER */
+.sh{margin-bottom:22px}
+.sh h1{font-size:26px;font-weight:900;color:var(--navy);margin-bottom:6px}
+.sh p{font-size:14px;color:var(--dgray);line-height:1.65;max-width:820px}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;font-size:11px;font-weight:800;margin-bottom:10px;background:var(--lgold);color:var(--navy)}
+/* INSTR BOX */
+.instr{background:var(--navy);color:var(--white);padding:14px 18px;border-radius:10px;font-size:13.5px;line-height:1.7;margin-bottom:24px;border-left:4px solid var(--gold)}
+.instr strong{color:var(--lgold)}
+/* SCORE */
+.scorebar{background:var(--navy);border-radius:12px;padding:18px 24px;margin-bottom:24px;display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+.sc-item{text-align:center}
+.sc-num{font-size:30px;font-weight:900;color:var(--lgold)}
+.sc-lbl{font-size:11px;color:var(--gray);font-weight:700;margin-top:2px}
+.sc-bar-w{flex:1;min-width:180px}
+.sc-bar-t{font-size:13px;font-weight:700;color:var(--white);margin-bottom:7px}
+.sc-bar-bg{background:rgba(255,255,255,.12);border-radius:99px;height:8px}
+.sc-bar-f{background:var(--gold);border-radius:99px;height:8px;transition:width .5s}
+/* EMAIL CARDS */
+.elist{display:flex;flex-direction:column;gap:22px}
+.ecard{background:var(--white);border-radius:12px;border:1px solid var(--border);overflow:hidden;box-shadow:0 2px 14px rgba(0,0,0,.07);transition:box-shadow .2s}
+.ecard:hover{box-shadow:0 6px 26px rgba(0,0,0,.11)}
+/* email chrome bar */
+.echrome{background:#EBEBEB;padding:7px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px}
+.dot{width:11px;height:11px;border-radius:50%}
+.dr{background:#FF5F57}.dy{background:#FEBC2E}.dg{background:#28C840}
+.addr{flex:1;background:white;border-radius:4px;padding:3px 12px;font-family:var(--mono);font-size:11px;color:var(--dgray);border:1px solid #DDD;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+/* email header */
+.ehdr{padding:16px 22px 12px;border-bottom:1px solid var(--border)}
+.esubject{font-size:17px;font-weight:800;color:var(--navy);margin-bottom:10px}
+.emeta{display:grid;grid-template-columns:68px 1fr;gap:3px 0;font-size:13px}
+.elbl{color:var(--gray);font-weight:700}
+.eval{color:var(--dgray)}
+.eval.sus{color:var(--red);font-weight:700;font-family:var(--mono);font-size:12px}
+/* email body */
+.ebody{padding:18px 22px;font-size:13.5px;line-height:1.78;color:var(--dgray);border-bottom:1px solid var(--border)}
+.saludo{font-weight:700;margin-bottom:8px;color:var(--navy)}
+.urgente{color:var(--red);font-weight:800;font-size:14px}
+.fakelink{display:inline-block;background:#1a73e8;color:white;padding:9px 18px;border-radius:6px;font-weight:700;font-size:13px;margin:10px 0;cursor:default;text-decoration:none;position:relative}
+.fakelink::after{content:attr(data-real);position:absolute;bottom:-26px;left:0;background:#111;color:#fff;font-size:10px;font-family:var(--mono);padding:3px 8px;border-radius:4px;white-space:nowrap;pointer-events:none;z-index:10}
+.firma{margin-top:14px;padding-top:10px;border-top:1px solid var(--border);font-size:12.5px}
+.firma strong{display:block;color:var(--navy);margin-bottom:2px}
+.adjbadge{display:inline-flex;align-items:center;gap:8px;background:var(--lamber);border:1px solid var(--amber);border-radius:6px;padding:7px 13px;margin-top:8px;font-size:13px;color:var(--amber);font-weight:700}
+/* highlight tooltips */
+.hlr,.hla{border-radius:3px;padding:1px 3px;cursor:help;position:relative}
+.hlr{background:#FDECEA}
+.hla{background:#FEF9E7}
+.tip{position:absolute;bottom:100%;left:0;background:#1A2844;color:white;font-size:11px;padding:6px 10px;border-radius:6px;white-space:normal;display:none;z-index:50;margin-bottom:4px;font-weight:500;width:260px;line-height:1.5;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.hlr:hover .tip,.hla:hover .tip{display:block}
+/* verdict */
+.verdict{padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.vq{font-size:14px;font-weight:700;color:var(--navy)}
+.vbtns{display:flex;gap:9px}
+.bl,.bp{padding:8px 20px;border-radius:8px;font-family:var(--font);font-size:13px;font-weight:800;cursor:pointer;border:2px solid;transition:all .2s}
+.bl{border-color:var(--green);color:var(--green);background:transparent}
+.bl:hover{background:var(--lgreen)}
+.bp{border-color:var(--red);color:var(--red);background:transparent}
+.bp:hover{background:var(--lred)}
+.vres{display:none;width:100%;padding:13px 16px;border-radius:8px;font-size:13.5px;line-height:1.65;margin-top:4px}
+.vres.ok{background:var(--lgreen);border-left:4px solid var(--green)}
+.vres.err{background:var(--lred);border-left:4px solid var(--red)}
+.vres h4{font-size:14px;font-weight:900;margin-bottom:7px}
+.vres ul{padding-left:18px}
+.vres ul li{margin-bottom:5px}
+/* ====== TALLER B ====== */
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:720px){.agrid{grid-template-columns:1fr}}
+.abox{background:var(--white);border-radius:12px;padding:26px;border:1px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.abox h3{font-size:15px;font-weight:900;color:var(--navy);margin-bottom:4px}
+.abox p{font-size:13px;color:var(--gray);margin-bottom:16px}
+.piw{position:relative;margin-bottom:12px}
+.pi{width:100%;padding:11px 46px 11px 14px;border:2px solid var(--border);border-radius:8px;font-family:var(--mono);font-size:15px;color:var(--navy);outline:none;transition:border-color .2s}
+.pi:focus{border-color:var(--gold)}
+.ptog{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:17px;color:var(--gray)}
+.stbar{height:6px;border-radius:99px;background:var(--border);margin-bottom:7px;overflow:hidden}
+.stfill{height:100%;border-radius:99px;transition:width .4s,background .4s}
+.stlbl{font-size:12px;font-weight:800;text-align:right;margin-bottom:4px}
+.chklist{display:flex;flex-direction:column;gap:7px;margin-top:14px}
+.chi{display:flex;align-items:center;gap:9px;padding:9px 13px;border-radius:8px;border:1px solid var(--border);font-size:13px;font-weight:600;transition:all .3s;background:var(--off)}
+.chi.pass{background:var(--lgreen);border-color:var(--green);color:var(--green)}
+.chi.fail{background:var(--lred);border-color:var(--red);color:var(--red)}
+.chi .ci{font-size:15px;min-width:18px}
+.aright{display:flex;flex-direction:column;gap:15px}
+.tipc{background:var(--white);border-radius:12px;padding:18px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.tipc h4{font-size:13.5px;font-weight:900;color:var(--navy);margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.tipc p,.tipc li{font-size:13px;color:var(--dgray);line-height:1.65}
+.tipc ul{padding-left:17px}
+.tipc li{margin-bottom:5px}
+.bex{display:flex;flex-direction:column;gap:5px;margin-top:9px}
+.be{display:flex;align-items:center;justify-content:space-between;padding:6px 12px;border-radius:7px;font-family:var(--mono);font-size:12.5px}
+.be.bad{background:var(--lred);color:var(--red)}
+.be.good{background:var(--lgreen);color:var(--green)}
+/* ====== TALLER C ====== */
+.cbuilder{display:grid;grid-template-columns:1fr 1.3fr;gap:22px}
+@media(max-width:800px){.cbuilder{grid-template-columns:1fr}}
+.cform{background:var(--white);border-radius:12px;padding:22px;border:1px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,.06);align-self:start}
+.cform h3{font-size:15px;font-weight:900;color:var(--navy);margin-bottom:14px}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:11px;font-weight:800;color:var(--dgray);margin-bottom:5px;letter-spacing:.5px;text-transform:uppercase}
+.fc{width:100%;padding:9px 13px;border:2px solid var(--border);border-radius:8px;font-family:var(--font);font-size:13px;color:var(--navy);outline:none;transition:border-color .2s;background:var(--off)}
+.fc:focus{border-color:var(--gold);background:white}
+.imps{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.impb{padding:7px;border:2px solid var(--border);border-radius:8px;font-family:var(--font);font-size:12px;font-weight:800;cursor:pointer;background:white;transition:all .2s;text-align:center}
+.impb:hover{border-color:var(--gold)}
+.impb.sa{background:var(--lred);border-color:var(--red);color:var(--red)}
+.impb.sm{background:var(--lamber);border-color:var(--amber);color:var(--amber)}
+.impb.sb{background:var(--lgreen);border-color:var(--green);color:var(--green)}
+.btnadd{width:100%;padding:11px;background:var(--navy);color:var(--lgold);border:none;border-radius:8px;font-family:var(--font);font-size:14px;font-weight:800;cursor:pointer;margin-top:4px;transition:all .2s}
+.btnadd:hover{background:var(--navy2)}
+.atblz{background:var(--white);border-radius:12px;padding:22px;border:1px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.atblz h3{font-size:15px;font-weight:900;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.bclr{background:none;border:1px solid var(--border);border-radius:6px;padding:3px 11px;font-family:var(--font);font-size:12px;color:var(--gray);cursor:pointer}
+.bclr:hover{border-color:var(--red);color:var(--red)}
+.atbl{width:100%;border-collapse:collapse;font-size:13px}
+.atbl th{text-align:left;padding:7px 11px;background:var(--off);font-size:11px;font-weight:800;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+.atbl td{padding:9px 11px;border-bottom:1px solid var(--border);vertical-align:top}
+.atbl tr:last-child td{border-bottom:none}
+.atbl tr:hover td{background:var(--off)}
+.pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:800}
+.pa{background:var(--lred);color:var(--red)}
+.pm{background:var(--lamber);color:var(--amber)}
+.pb{background:var(--lgreen);color:var(--green)}
+.bdel{background:none;border:none;cursor:pointer;font-size:13px;color:var(--gray);padding:2px 6px;border-radius:4px}
+.bdel:hover{background:var(--lred);color:var(--red)}
+.empty{text-align:center;padding:36px 20px;color:var(--gray)}
+.empty .ei{font-size:38px;margin-bottom:9px}
+.empty p{font-size:13px}
+.asum{margin-top:14px;padding:13px 17px;background:var(--off);border-radius:10px;border:1px solid var(--border)}
+.asum h4{font-size:13px;font-weight:900;color:var(--navy);margin-bottom:9px}
+.srow{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:13px}
+.scnt{font-weight:900}
+.tpanel{margin-top:18px}
+.tpmini{background:var(--navy);color:var(--white);border-radius:10px;padding:13px 17px;font-size:13px;line-height:1.65;margin-bottom:9px;border-left:4px solid var(--gold)}
+.tpmini strong{color:var(--lgold)}
+/* FOOTER */
+.foot{background:var(--navy);color:var(--lgold);text-align:center;padding:18px;font-size:11px;margin-top:40px;font-weight:700;letter-spacing:.6px}
+.mt16{margin-top:16px}.mt20{margin-top:20px}
+.ibox{background:var(--off);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin:8px 0;font-size:13px;line-height:1.7}
+
+/* ── MOBILE RESPONSIVE ── */
+@media(max-width:600px){
+  .hdr{padding:8px 14px 0}
+  .hdr-brand{font-size:9px;letter-spacing:.6px}
+  .tabs{gap:2px}
+  .tab{padding:8px 10px;font-size:11px}
+  .tab .bdg{display:none}
+  .panel{padding:16px}
+  .sh h1{font-size:20px}
+  .scorebar{gap:14px;padding:14px 16px}
+  .sc-num{font-size:22px}
+  .ecard .echrome .addr{font-size:9px}
+  .esubject{font-size:14px}
+  .emeta{font-size:12px}
+  .ebody{font-size:13px;padding:14px 16px}
+  .ehdr{padding:12px 16px 10px}
+  .verdict{padding:12px 16px;flex-direction:column;align-items:flex-start}
+  .vbtns{width:100%;justify-content:stretch}
+  .bl,.bp{flex:1;text-align:center}
+  .agrid,.cbuilder{grid-template-columns:1fr}
+  .imps{grid-template-columns:repeat(3,1fr)}
+  .fakelink::after{display:none}
+}
+/* ── PRINT STYLES ── */
+@media print{
+  .hdr,.scorebar,.verdict,.btnadd,.bclr,.bdel,.tpanel,.aright .tipc:last-child{display:none!important}
+  .panel{display:block!important;padding:0}
+  .ecard{break-inside:avoid;box-shadow:none;border:1px solid #ccc}
+  body{background:white}
+}
+/* ── LOADING INDICATOR ── */
+#loader{position:fixed;inset:0;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s}
+#loader.hide{opacity:0;pointer-events:none}
+.loader-logo{font-family:'Montserrat',sans-serif;font-size:22px;font-weight:900;color:var(--lgold);letter-spacing:2px;margin-bottom:10px}
+.loader-sub{font-family:'Montserrat',sans-serif;font-size:12px;color:var(--gray);letter-spacing:1px}
+.loader-bar{width:180px;height:3px;background:rgba(255,255,255,.15);border-radius:99px;margin-top:20px;overflow:hidden}
+.loader-fill{height:100%;background:var(--gold);border-radius:99px;animation:loadfill 1.2s ease forwards}
+@keyframes loadfill{from{width:0%}to{width:100%}}
+
+
+/* ── PASSWORD GATE ── */
+#pwgate{
+  position:fixed;inset:0;background:linear-gradient(135deg,#1A2844 0%,#0F1C35 100%);
+  display:flex;align-items:center;justify-content:center;z-index:10000;
+  font-family:'Montserrat',sans-serif;padding:20px;
+}
+#pwgate.hidden{display:none}
+.pwg-card{
+  background:white;border-radius:16px;padding:44px 40px;max-width:400px;width:100%;
+  box-shadow:0 24px 64px rgba(0,0,0,.35);text-align:center;
+}
+.pwg-logo{
+  width:64px;height:64px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;
+}
+.pwg-logo svg{width:100%;height:100%}
+.pwg-title{font-size:19px;font-weight:900;color:#1A2844;margin-bottom:6px}
+.pwg-sub{font-size:13px;color:#8492A6;margin-bottom:26px;line-height:1.5}
+.pwg-input{
+  width:100%;padding:13px 16px;border:2px solid #E2E8F0;border-radius:10px;
+  font-family:'Montserrat',sans-serif;font-size:15px;color:#1A2844;outline:none;
+  transition:border-color .2s;text-align:center;letter-spacing:2px;
+}
+.pwg-input:focus{border-color:#B8963E}
+.pwg-input.shake{animation:pwgshake .4s}
+@keyframes pwgshake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.pwg-btn{
+  width:100%;padding:13px;background:#1A2844;color:#D4AF5A;border:none;border-radius:10px;
+  font-family:'Montserrat',sans-serif;font-size:14px;font-weight:800;cursor:pointer;
+  margin-top:12px;transition:background .2s;letter-spacing:.5px;
+}
+.pwg-btn:hover{background:#1E3260}
+.pwg-error{
+  color:#C0392B;font-size:12.5px;font-weight:700;margin-top:10px;height:16px;opacity:0;transition:opacity .2s;
+}
+.pwg-error.show{opacity:1}
+.pwg-foot{font-size:11px;color:#B0BFD8;margin-top:24px;letter-spacing:.5px;font-weight:700}
+
+</style>
+</head>
+<body>
+
+
+
+<!-- PASSWORD GATE -->
+<div id="pwgate">
+  <div class="pwg-card">
+    <div class="pwg-logo">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="50,8 82,30 82,58 50,92 18,58 18,30" fill="none" stroke="#B8963E" stroke-width="4"/>
+        <polygon points="50,8 68,34 50,52 32,34" fill="none" stroke="#B8963E" stroke-width="2.5"/>
+        <circle cx="50" cy="55" r="5" fill="#B8963E"/>
+      </svg>
+    </div>
+    <div class="pwg-title">Talleres de Ciberseguridad</div>
+    <div class="pwg-sub">Acceso restringido a participantes del curso.<br>Ingresa la clave entregada por el facilitador.</div>
+    <input type="password" id="pwg-input" class="pwg-input" placeholder="• • • • • •" autocomplete="off" maxlength="30">
+    <button class="pwg-btn" onclick="checkPwGate()">Ingresar al taller</button>
+    <div class="pwg-error" id="pwg-error">Clave incorrecta. Intenta nuevamente.</div>
+    <div class="pwg-foot">PUMARINO.CL &nbsp;·&nbsp; AI SECURE LABS</div>
+  </div>
+</div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">PUMARINO.CL</div>
+  <div class="loader-sub">Cargando talleres de ciberseguridad...</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+</div>
+
+<div class="hdr">
+  <div class="hdr-brand">PUMARINO.CL &nbsp;·&nbsp; AI SECURE LABS &nbsp;·&nbsp; TALLERES PRÁCTICOS — CIBERSEGURIDAD PARA CENTROS FERRETEROS</div>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('a')">🎣 Taller A — Phishing <span class="bdg">6 correos</span></button>
+    <button class="tab" onclick="showTab('b')">🔑 Taller B — Contraseñas</button>
+    <button class="tab" onclick="showTab('c')">📋 Taller C — Activos Críticos</button>
+  </div>
+</div>
+
+<!-- ══════════════════════ PANEL A ══════════════════════ -->
+<div id="panel-a" class="panel active">
+  <div class="sh">
+    <span class="badge">Taller A · ~5 min · 3–6 voluntarios</span>
+    <h1>Simulacro de Phishing</h1>
+    <p>Analiza los 6 correos. Decide si cada uno es <strong>legítimo</strong> o <strong>phishing</strong>. Pasa el cursor sobre los textos subrayados para ver pistas ocultas. Cuidado: algunos son extremadamente convincentes.</p>
+  </div>
+
+  <div class="scorebar">
+    <div class="sc-item"><div class="sc-num" id="sco">0</div><div class="sc-lbl">CORRECTOS</div></div>
+    <div class="sc-item"><div class="sc-num" id="swe">0</div><div class="sc-lbl">ERRORES</div></div>
+    <div class="sc-item"><div class="sc-num" id="sto">0/6</div><div class="sc-lbl">RESPONDIDOS</div></div>
+    <div class="sc-bar-w">
+      <div class="sc-bar-t">Progreso del taller</div>
+      <div class="sc-bar-bg"><div class="sc-bar-f" id="spb" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="elist">
+
+    <!-- E1: PHISHING SII -->
+    <div class="ecard" id="c1">
+      <div class="echrome">
+        <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+        <div class="addr">https://sii.cl.validacion-documentos.net/contribuyente/alerta-urgente</div>
+      </div>
+      <div class="ehdr">
+        <div class="esubject">⚠️ URGENTE: Declaración de IVA con inconsistencias — Plazo vence HOY 23:59</div>
+        <div class="emeta">
+          <span class="elbl">De:</span>
+          <span class="eval sus"><span class="hlr">notificaciones@sii.cl.documentos-legales.com<span class="tip">⚠️ El dominio real del SII es sii.cl. Este usa documentos-legales.com con "sii.cl." al comienzo para engañar. Son dominios completamente distintos.</span></span></span>
+          <span class="elbl">Para:</span><span class="eval">contribuyente@ferreteria-xyz.cl</span>
+          <span class="elbl">Fecha:</span><span class="eval">Hoy, 08:47 hrs.</span>
+        </div>
+      </div>
+      <div class="ebody">
+        <p class="saludo">Estimado(a) Contribuyente,</p>
+        <p>El <strong>Servicio de Impuestos Internos</strong> ha detectado <span class="hlr">inconsistencias en su declaración de IVA del período octubre–noviembre<span class="tip">⚠️ El SII notifica por carta certificada o en el portal oficial usando su RUT, nunca con términos vagos como "inconsistencias" por correo masivo.</span></span>.</p>
+        <br>
+        <p class="urgente">⏰ Tiene tiempo hasta las 23:59 de HOY para regularizar su situación antes de una multa automática de 3 UTM.</p>
+        <br>
+        <p>Para evitar el bloqueo de su RUT ante el sistema tributario, ingrese sus <span class="hlr">credenciales del Portal SII<span class="tip">⚠️ El SII JAMÁS solicita credenciales por correo. Siempre acceda directamente escribiendo www.sii.cl en el navegador.</span></span>:</p>
+        <br>
+        <a class="fakelink" data-real="→ URL real: hxxps://sii.cl.documentos-legales.com/robo-credenciales.php">Regularizar mi situación tributaria →</a>
+        <br><br>
+        <p><small>Si no regulariza en el plazo indicado, se aplicarán las sanciones del artículo 97 N°11 del Código Tributario.</small></p>
+        <div class="firma">
+          <strong>Servicio de Impuestos Internos — Chile</strong>
+          Depto. de Fiscalización y Auditoría Tributaria<br>
+          <span class="hla">Teléfono: +56 2 2395 1115<span class="tip">⚠️ El número real del SII es el 22395 1000. Este número es diferente y lleva a los atacantes.</span></span>
+        </div>
+      </div>
+      <div class="verdict">
+        <span class="vq">¿Este correo es legítimo o phishing?</span>
+        <div class="vbtns"><button class="bl" onclick="ans(1,'legit','phish')">✓ Legítimo</button><button class="bp" onclick="ans(1,'phish','phish')">⚠ Phishing</button></div>
+        <div class="vres" id="r1"></div>
+      </div>
+    </div>
+
+    <!-- E2: LEGÍTIMO proveedor -->
+    <div class="ecard" id="c2">
+      <div class="echrome">
+        <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+        <div class="addr">https://mail.google.com/mail/u/0/#inbox/18d45fabcc...</div>
+      </div>
+      <div class="ehdr">
+        <div class="esubject">Confirmación pedido #PV-2024-8821 — Ferretería Industrial Ltda.</div>
+        <div class="emeta">
+          <span class="elbl">De:</span><span class="eval">ventas@ferreteriaIndustrial.cl</span>
+          <span class="elbl">Para:</span><span class="eval">compras@ferreteria-xyz.cl</span>
+          <span class="elbl">Fecha:</span><span class="eval">Hoy, 09:15 hrs.</span>
+        </div>
+      </div>
+      <div class="ebody">
+        <p class="saludo">Buenos días Rodrigo,</p>
+        <p>Te confirmamos la recepción de tu pedido <strong>#PV-2024-8821</strong> por un total de <strong>$1.240.000 + IVA</strong>.</p>
+        <br>
+        <p><strong>Detalle del pedido:</strong></p>
+        <ul style="padding-left:20px;margin:8px 0;line-height:2">
+          <li>50 unidades — Tornillo estructural 1/2" galvanizado</li>
+          <li>20 unidades — Disco corte inox 4.5"</li>
+          <li>5 unidades — Taladro percutor 800W</li>
+        </ul>
+        <p><strong>Despacho estimado:</strong> Jueves 14 de noviembre, entre 09:00 y 13:00 hrs.</p>
+        <p><strong>Datos de pago:</strong> Factura a 30 días según contrato vigente (los mismos de siempre).</p>
+        <div class="firma">
+          <strong>María González — Ejecutiva de Ventas</strong>
+          Ferretería Industrial Ltda. · ventas@ferreteriaIndustrial.cl · +56 2 2345 6789
+        </div>
+      </div>
+      <div class="verdict">
+        <span class="vq">¿Este correo es legítimo o phishing?</span>
+        <div class="vbtns"><button class="bl" onclick="ans(2,'legit','legit')">✓ Legítimo</button><button class="bp" onclick="ans(2,'phish','legit')">⚠ Phishing</button></div>
+        <div class="vres" id="r2"></div>
+      </div>
+    </div>
+
+    <!-- E3: PHISHING BEC cambio cuenta -->
+    <div class="ecard" id="c3">
+      <div class="echrome">
+        <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+        <div class="addr">https://outlook.live.com/mail/0/inbox/AQMkADA…</div>
+      </div>
+      <div class="ehdr">
+        <div class="esubject">Actualización importante de datos bancarios — Distribuidora Norte Chile S.A.</div>
+        <div class="emeta">
+          <span class="elbl">De:</span>
+          <span class="eval sus"><span class="hlr">cobranzas@distribuidora-norte-chile.cl.com<span class="tip">⚠️ El dominio real es distribuidora-norte-chile.cl — este tiene ".com" al final, formando ".cl.com", que es un dominio diferente creado para este fraude.</span></span></span>
+          <span class="elbl">Para:</span><span class="eval">pagos@ferreteria-xyz.cl</span>
+          <span class="elbl">Fecha:</span><span class="eval">Ayer, 17:42 hrs.</span>
+        </div>
+      </div>
+      <div class="ebody">
+        <p class="saludo">Estimado equipo de pagos,</p>
+        <p>Les informamos que <span class="hlr">por motivos de una auditoría interna y cambio de entidad bancaria<span class="tip">⚠️ Excusa genérica típica de fraudes BEC. Las empresas reales no cambian cuentas bancarias abruptamente por "auditorías" sin proceso formal.</span></span>, a partir de hoy <strong>todos los pagos deben realizarse a la siguiente nueva cuenta corriente:</strong></p>
+        <br>
+        <div class="ibox">
+          <strong>Banco:</strong> Banco de Chile &nbsp;|&nbsp; <strong>N° Cuenta:</strong> <span class="hlr">76-543-21098<span class="tip">⚠️ Siempre llame al número registrado de su proveedor antes de hacer cualquier transferencia a una cuenta nueva. Nunca al número del correo.</span></span><br>
+          <strong>Tipo:</strong> Cuenta Corriente &nbsp;|&nbsp; <strong>RUT:</strong> 99.999.999-9<br>
+          <strong>Email confirmación:</strong> pagos@distribuidora-norte-chile.cl.com
+        </div>
+        <br>
+        <p><span class="hla">Por favor confirme la recepción respondiendo este correo.<span class="tip">⚠️ Piden respuesta al mismo correo falso para confirmar que está activo. No conteste.</span></span></p>
+        <p>Transferencias a la cuenta anterior <strong>no podrán ser procesadas</strong> desde esta fecha.</p>
+        <div class="firma">
+          <strong>Carlos Mendoza — Jefe de Cobranzas</strong>
+          Distribuidora Norte Chile S.A.<br>
+          <span class="hla">Fono: +56 9 8765 4321 (¿Es el mismo número que tienes registrado?)<span class="tip">⚠️ Siempre llame al número que tiene en SU sistema, nunca al del correo. Este número pertenece al atacante.</span></span>
+        </div>
+      </div>
+      <div class="verdict">
+        <span class="vq">¿Este correo es legítimo o phishing?</span>
+        <div class="vbtns"><button class="bl" onclick="ans(3,'legit','phish')">✓ Legítimo</button><button class="bp" onclick="ans(3,'phish','phish')">⚠ Phishing</button></div>
+        <div class="vres" id="r3"></div>
+      </div>
+    </div>
+
+    <!-- E4: LEGÍTIMO banco -->
+    <div class="ecard" id="c4">
+      <div class="echrome">
+        <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+        <div class="addr">https://avisos.bancoestado.cl/aviso/cargo_tarjeta_4821</div>
+      </div>
+      <div class="ehdr">
+        <div class="esubject">Comprobante de cargo — Tarjeta terminada en 4821 — $245.000</div>
+        <div class="emeta">
+          <span class="elbl">De:</span><span class="eval">avisos@bancoestado.cl</span>
+          <span class="elbl">Para:</span><span class="eval">gerencia@ferreteria-xyz.cl</span>
+          <span class="elbl">Fecha:</span><span class="eval">Hoy, 11:03 hrs.</span>
+        </div>
+      </div>
+      <div class="ebody">
+        <p>Le informamos que se ha realizado un <strong>cargo en su tarjeta de crédito BancoEstado</strong> terminada en <strong>4821</strong>.</p>
+        <br>
+        <div class="ibox">
+          <strong>Monto:</strong> $245.000 CLP &nbsp;|&nbsp; <strong>Cuotas:</strong> 1 sin interés<br>
+          <strong>Comercio:</strong> SODIMAC HOMECENTER<br>
+          <strong>Fecha/Hora:</strong> 11/11/2024 — 10:58 hrs.
+        </div>
+        <br>
+        <p>Si realizó esta compra, no necesita hacer nada. Si <strong>no reconoce este cargo</strong>, ingrese directamente a <strong>www.bancoestado.cl</strong> o llame al <strong>600 200 7000</strong> para bloquear su tarjeta.</p>
+        <br>
+        <p><small style="color:var(--gray)">Aviso automático. BancoEstado nunca solicita claves por correo ni teléfono.</small></p>
+        <div class="firma">
+          <strong>BancoEstado</strong>
+          avisos@bancoestado.cl · www.bancoestado.cl · 600 200 7000
+        </div>
+      </div>
+      <div class="verdict">
+        <span class="vq">¿Este correo es legítimo o phishing?</span>
+        <div class="vbtns"><button class="bl" onclick="ans(4,'legit','legit')">✓ Legítimo</button><button class="bp" onclick="ans(4,'phish','legit')">⚠ Phishing</button></div>
+        <div class="vres" id="r4"></div>
+      </div>
+    </div>
+
+    <!-- E5: PHISHING Microsoft 365 -->
+    <div class="ecard" id="c5">
+      <div class="echrome">
+        <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+        <div class="addr">https://microsoft365-soporte-cl.info/cuenta/verificacion-urgente</div>
+      </div>
+      <div class="ehdr">
+        <div class="esubject">Tu cuenta de Microsoft 365 será suspendida en 24 horas — Acción requerida</div>
+        <div class="emeta">
+          <span class="elbl">De:</span>
+          <span class="eval sus"><span class="hlr">account-security@microsoft365-accounts.info<span class="tip">⚠️ Microsoft envía SOLO desde @microsoft.com. El dominio "microsoft365-accounts.info" fue registrado por atacantes esta semana para esta campaña.</span></span></span>
+          <span class="elbl">Para:</span><span class="eval">admin@ferreteria-xyz.cl</span>
+          <span class="elbl">Fecha:</span><span class="eval">Hoy, 06:22 hrs.</span>
+        </div>
+      </div>
+      <div class="ebody">
+        <div style="text-align:center;background:#0078D4;padding:14px;border-radius:6px;margin-bottom:14px"><span style="color:white;font-size:17px;font-weight:800">Microsoft 365</span></div>
+        <p class="urgente">⚠️ Acción requerida: Tu cuenta será suspendida</p>
+        <br>
+        <p>Hemos detectado <span class="hlr">actividad inusual en tu cuenta<span class="tip">⚠️ Término vago sin especificar qué actividad, desde qué país, ni a qué hora. Diseñado para crear pánico sin información verificable.</span></span>. Para proteger tu información, hemos restringido temporalmente el acceso.</p>
+        <br>
+        <p><strong>Verifica tu identidad en las próximas 24 horas para recuperar el acceso:</strong></p>
+        <br>
+        <a class="fakelink" data-real="→ URL: hxxps://microsoft365-soporte-cl.info/phish/login.html">Verificar mi cuenta de Microsoft ahora →</a>
+        <br><br>
+        <p><small><span class="hla">Si no verificas antes de 24 horas, perderás acceso permanente a todos tus archivos de OneDrive y correos de Outlook.<span class="tip">⚠️ Amenaza de pérdida total e irreversible: técnica clásica de manipulación psicológica para que actúes rápido sin pensar ni verificar.</span></span></small></p>
+        <div class="firma">
+          <strong>Equipo de Seguridad de Microsoft</strong>
+          <span class="hlr">microsoft-support@microsoft365-accounts.info<span class="tip">⚠️ Mismo dominio falso. Responder confirma tu dirección como activa. Microsoft contacta desde @microsoft.com únicamente.</span></span>
+        </div>
+      </div>
+      <div class="verdict">
+        <span class="vq">¿Este correo es legítimo o phishing?</span>
+        <div class="vbtns"><button class="bl" onclick="ans(5,'legit','phish')">✓ Legítimo</button><button class="bp" onclick="ans(5,'phish','phish')">⚠ Phishing</button></div>
+        <div class="vres" id="r5"></div>
+      </div>
+    </div>
+
+    <!-- E6: PHISHING avanzado typosquatting -->
+    <div class="ecard" id="c6">
+      <div class="echrome">
+        <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+        <div class="addr">https://outlook.live.com/mail/0/inbox/AQMkX7BcP…</div>
+      </div>
+      <div class="ehdr">
+        <div class="esubject">Re: Pedido #PV-2024-8821 — Cambio urgente por paro de transporte</div>
+        <div class="emeta">
+          <span class="elbl">De:</span>
+          <span class="eval sus"><span class="hlr">ventas@ferreteriaIndustriaI.cl<span class="tip">⚠️ CASI IMPOSIBLE DE VER: "Industrial" termina con "I" (mayúscula) en lugar de "l" (minúscula). ferreteriaIndustriaI.cl ≠ ferreteriaIndustrial.cl. Ataque de homógrafo / typosquatting.</span></span></span>
+          <span class="elbl">Para:</span><span class="eval">compras@ferreteria-xyz.cl</span>
+          <span class="elbl">Fecha:</span><span class="eval">Hoy, 14:31 hrs.</span>
+        </div>
+      </div>
+      <div class="ebody">
+        <p class="saludo">Hola Rodrigo,</p>
+        <p>Te escribo en seguimiento al pedido <strong>#PV-2024-8821</strong> confirmado esta mañana.</p>
+        <br>
+        <p>Debido al <strong>paro de camioneros en la región</strong>, necesitamos el prepago del 50% para asegurar el despacho antes del viernes. Nuestro sistema habitual está saturado, por lo que esta vez solicitamos transferencia directa:</p>
+        <br>
+        <div class="ibox">
+          <strong>Banco:</strong> Banco de Chile &nbsp;|&nbsp; <strong>N° Cuenta:</strong> 12345678<br>
+          <strong>Titular:</strong> Ferretería Industrial Ltda. &nbsp;|&nbsp; <strong>RUT:</strong> 76.987.654-3<br>
+          <strong>Monto:</strong> $620.000 (50% del pedido #PV-2024-8821)
+        </div>
+        <br>
+        <p><span class="hlr">Por favor realice la transferencia antes de las 17:00 de hoy y envíe el comprobante respondiendo este correo.<span class="tip">⚠️ Urgencia artificial + proceso fuera del normal = señal de alerta. Llame a María González al +56 2 2345 6789 (número de SU sistema) para confirmar antes de transferir.</span></span></p>
+        <p>Lamentamos los inconvenientes. Quedamos atentos.</p>
+        <div class="firma">
+          <strong>María González — Ejecutiva de Ventas</strong>
+          <span class="hla">ventas@ferreteriaIndustriaI.cl<span class="tip">⚠️ Compara: ferreteriaIndustriaI.cl (I mayúscula) vs ferreteriaIndustrial.cl (l minúscula). Diferencia casi invisible a simple vista.</span></span> · +56 2 2345 6789
+        </div>
+      </div>
+      <div class="verdict">
+        <span class="vq">¿Este correo es legítimo o phishing? <em style="color:var(--amber);font-size:12px">(⚡ Nivel difícil)</em></span>
+        <div class="vbtns"><button class="bl" onclick="ans(6,'legit','phish')">✓ Legítimo</button><button class="bp" onclick="ans(6,'phish','phish')">⚠ Phishing</button></div>
+        <div class="vres" id="r6"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════ PANEL B ══════════════════════ -->
+<div id="panel-b" class="panel">
+  <div class="sh">
+    <span class="badge">Taller B · ~5 min · Individual</span>
+    <h1>Auditoría Express de Contraseñas</h1>
+    <p>Escribe o inventa una contraseña de prueba y el sistema evalúa en tiempo real si cumple los criterios de seguridad mínimos. <strong>No uses tu contraseña real.</strong></p>
+  </div>
+  <div class="instr">
+    <strong>Para el facilitador:</strong> Proyecta esta pantalla. Pide a los voluntarios que inventen una contraseña nueva. Evalúen juntos cada criterio. Reflexionen sobre las preguntas al final. <strong>Nadie comparte contraseñas reales en voz alta.</strong>
+  </div>
+  <div class="agrid">
+    <div class="abox">
+      <h3>🔑 Evaluador en tiempo real</h3>
+      <p>Escribe una contraseña de prueba (no la real)</p>
+      <div class="piw">
+        <input type="password" class="pi" id="pf" placeholder="Escribe aquí tu contraseña de prueba..." oninput="evPwd(this.value)">
+        <button class="ptog" onclick="togPwd()">👁</button>
+      </div>
+      <div class="stbar"><div class="stfill" id="sf" style="width:0%"></div></div>
+      <div class="stlbl" id="sl" style="color:var(--gray)">Escribe una contraseña para comenzar</div>
+      <div class="chklist">
+        <div class="chi" id="ck-len"><span class="ci">⬜</span><span>Mínimo 12 caracteres</span></div>
+        <div class="chi" id="ck-up"><span class="ci">⬜</span><span>Al menos 1 letra MAYÚSCULA</span></div>
+        <div class="chi" id="ck-lo"><span class="ci">⬜</span><span>Al menos 1 letra minúscula</span></div>
+        <div class="chi" id="ck-nu"><span class="ci">⬜</span><span>Al menos 1 número</span></div>
+        <div class="chi" id="ck-sy"><span class="ci">⬜</span><span>Al menos 1 símbolo (!@#$%&*)</span></div>
+        <div class="chi" id="ck-pe"><span class="ci">⬜</span><span>Sin patrones comunes (123, abc, nombre...)</span></div>
+        <div class="chi" id="ck-di"><span class="ci">⬜</span><span>No es una palabra de diccionario sola</span></div>
+      </div>
+      <div style="margin-top:18px;padding:13px;background:var(--off);border-radius:8px;border:1px solid var(--border)">
+        <strong style="font-size:13px;display:block;margin-bottom:6px">💡 Técnica de la frase de contraseña:</strong>
+        <p style="font-size:13px;color:var(--dgray);line-height:1.65">Toma la primera letra de cada palabra de una frase que solo tú recuerdas, más números y símbolos:<br>
+        <strong style="font-family:var(--mono);font-size:13px">"Mi ferretería abrió 3 locales en Antofagasta!" → <span style="color:var(--navy)">Mfa3leA!</span></strong><br>
+        Agrega más caracteres hasta 12+: <strong style="font-family:var(--mono);color:var(--green)">Mfa3leA!2024#</strong></p>
+      </div>
+    </div>
+    <div class="aright">
+      <div class="tipc">
+        <h4>❌ Contraseñas más usadas (crackeadas en segundos)</h4>
+        <p style="margin-bottom:9px;color:var(--gray)">Las que los atacantes prueban PRIMERO. Cámbiala hoy si usas alguna:</p>
+        <div class="bex">
+          <div class="be bad">123456<span>❌ &lt;1 segundo</span></div>
+          <div class="be bad">password / contraseña<span>❌ &lt;1 segundo</span></div>
+          <div class="be bad">qwerty123<span>❌ &lt;1 segundo</span></div>
+          <div class="be bad">Ferreteria2024<span>❌ ~2 minutos</span></div>
+          <div class="be bad">Admin123!<span>❌ ~1 hora</span></div>
+          <div class="be good">Mfa3@leAnt0f!<span>✅ +100 años</span></div>
+          <div class="be good">C4rv3t4#Norte22!<span>✅ +100 años</span></div>
+        </div>
+      </div>
+      <div class="tipc">
+        <h4>🔐 Gestores de contraseñas recomendados</h4>
+        <p>Solo necesitas recordar UNA contraseña maestra. El gestor hace el resto:</p>
+        <div class="bex" style="margin-top:9px">
+          <div class="be good">Bitwarden<span>✅ Gratuito y de código abierto</span></div>
+          <div class="be good">1Password<span>✅ Recomendado para empresas</span></div>
+          <div class="be good">KeePass<span>✅ Local, sin nube (máxima privacidad)</span></div>
+          <div class="be bad">Post-it / cuaderno visible<span>❌ Nunca</span></div>
+          <div class="be bad">Excel sin cifrar<span>❌ Alta exposición</span></div>
+        </div>
+      </div>
+      <div class="tipc">
+        <h4>📋 Preguntas para reflexión del grupo</h4>
+        <ul>
+          <li>¿Usas la misma contraseña en más de un sistema de la empresa?</li>
+          <li>¿Cuándo fue la última vez que cambiaron la clave del sistema de ventas?</li>
+          <li>¿Tienen el 2FA activado en el correo corporativo y la banca online?</li>
+          <li>¿Hay cuentas compartidas entre empleados? ¿Para qué sistemas?</li>
+          <li>¿Qué pasaría si alguien descubriera la contraseña del administrador del ERP?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ PANEL C ══════════════════════ -->
+<div id="panel-c" class="panel">
+  <div class="sh">
+    <span class="badge">Taller C · ~5 min · Grupos de 2</span>
+    <h1>Mapa de Activos Críticos</h1>
+    <p>Identifica los activos de información más importantes de tu ferretería. Para cada uno, evalúa el impacto de perderlo y propone una medida básica de protección.</p>
+  </div>
+  <div class="instr">
+    <strong>Para el facilitador:</strong> Divide en grupos de 2. Cada grupo completa el formulario por 4 minutos. Luego cada grupo comparte sus activos más críticos y se agregan a la tabla para discusión. El objetivo es identificar al menos 3 activos críticos con medidas concretas.
+  </div>
+  <div class="cbuilder">
+    <div class="cform">
+      <h3>➕ Agregar activo al mapa</h3>
+      <div class="fg">
+        <label>Nombre del activo</label>
+        <input type="text" class="fc" id="an" placeholder="Ej: Sistema ERP, base de clientes, correo corporativo...">
+      </div>
+      <div class="fg">
+        <label>Tipo de activo</label>
+        <select class="fc" id="at">
+          <option value="">— Selecciona el tipo —</option>
+          <option>Sistema / Software</option>
+          <option>Base de datos</option>
+          <option>Equipo / Hardware</option>
+          <option>Información / Documento</option>
+          <option>Credencial de acceso</option>
+          <option>Servicio en nube</option>
+          <option>Red / Comunicación</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>¿Qué pasaría si se pierde o queda inaccesible?</label>
+        <textarea class="fc" id="aid" rows="2" placeholder="Ej: No podemos cobrar, emitir boletas ni registrar ventas..."></textarea>
+      </div>
+      <div class="fg">
+        <label>Nivel de impacto</label>
+        <div class="imps">
+          <button class="impb" id="ba" onclick="selI('alto')">🔴 ALTO<br><span style="font-size:10px;font-weight:400">Paraliza el negocio</span></button>
+          <button class="impb" id="bm" onclick="selI('medio')">🟡 MEDIO<br><span style="font-size:10px;font-weight:400">Afecta la operación</span></button>
+          <button class="impb" id="bb" onclick="selI('bajo')">🟢 BAJO<br><span style="font-size:10px;font-weight:400">Molestia menor</span></button>
+        </div>
+      </div>
+      <div class="fg">
+        <label>Medida básica de protección que aplicarías HOY</label>
+        <input type="text" class="fc" id="ac" placeholder="Ej: Respaldo diario en nube, 2FA, antivirus actualizado...">
+      </div>
+      <button class="btnadd" onclick="addA()">+ Agregar al mapa de activos</button>
+      <div id="fe" style="color:var(--red);font-size:12px;margin-top:7px;display:none">Completa todos los campos antes de agregar</div>
+    </div>
+    <div>
+      <div class="atblz">
+        <h3>Mapa de Activos <span id="ac2" style="font-size:12px;color:var(--gray);font-weight:600">(0)</span>
+          <button class="bclr" onclick="clrA()">🗑 Limpiar</button>
+        </h3>
+        <div id="ae" class="empty"><div class="ei">🗺️</div><p>Agrega tu primer activo.</p><p style="margin-top:5px;font-size:12px">Empieza por el que, si falla, paraliza completamente el negocio.</p></div>
+        <table class="atbl" id="atable" style="display:none">
+          <thead><tr><th>#</th><th>Activo</th><th>Tipo</th><th>Impacto</th><th>Control propuesto</th><th></th></tr></thead>
+          <tbody id="atbody"></tbody>
+        </table>
+        <div class="asum" id="asum" style="display:none">
+          <h4>📊 Resumen de riesgo del mapa</h4>
+          <div class="srow"><span>Activos de impacto ALTO</span><span class="scnt" id="sa" style="color:var(--red)">0</span></div>
+          <div class="srow"><span>Activos de impacto MEDIO</span><span class="scnt" id="sm" style="color:var(--amber)">0</span></div>
+          <div class="srow"><span>Activos de impacto BAJO</span><span class="scnt" id="sb" style="color:var(--green)">0</span></div>
+        </div>
+      </div>
+      <div class="tpanel">
+        <div class="tpmini"><strong>💡 Activos típicos en una ferretería:</strong><br>Sistema ERP/POS · Base de datos clientes/precios · Servidor de facturación electrónica · Correo corporativo · Credenciales banca online · Contratos con proveedores · Registro de stock · Sistema de nómina · Red WiFi interna · Cámaras IP</div>
+        <div class="tpmini"><strong>📐 Pregunta guía para el grupo:</strong><br>"Si mañana abrimos y <em>[activo]</em> no funciona — ¿qué hacemos? ¿Tenemos plan B? ¿Cuánto tiempo podemos operar sin él?" Si la respuesta es "no sabemos" o "menos de 4 horas", ese activo es <strong style="color:var(--lgold)">crítico</strong> y necesita plan de continuidad urgente.</div>
+        <div class="tpmini"><strong>🎯 Objetivo del ejercicio:</strong><br>Identificar al menos 3 activos críticos con su medida de protección. Estos son el punto de partida del <strong style="color:var(--lgold)">Plan de Continuidad del Negocio (BCP)</strong>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="foot">PUMARINO.CL &nbsp;·&nbsp; AI SECURE LABS &nbsp;·&nbsp; Material de capacitación — Ciberseguridad para Centros Ferreteros &nbsp;·&nbsp; contacto@pumarino.cl</div>
+
+<script>
+// ── TABS ──
+function showTab(id){
+  ['a','b','c'].forEach(x=>{
+    document.getElementById('panel-'+x).classList.remove('active');
+    document.querySelectorAll('.tab')[{a:0,b:1,c:2}[x]].classList.remove('active');
+  });
+  document.getElementById('panel-'+id).classList.add('active');
+  document.querySelectorAll('.tab')[{a:0,b:1,c:2}[id]].classList.add('active');
+}
+
+// ── TALLER A ──
+const EXP={
+  1:{
+    phish:{
+      ok:{t:'✅ ¡Correcto! Es phishing del SII',items:['El dominio real del SII es <strong>sii.cl</strong>. Este usa <strong>documentos-legales.com</strong> con "sii.cl." como prefijo engañoso','El SII NUNCA pide credenciales por correo — siempre accede directamente escribiendo www.sii.cl en el navegador','La urgencia extrema ("vence HOY") es manipulación psicológica para que actúes sin pensar','El número de teléfono del correo es diferente al oficial del SII']},
+      err:{t:'❌ ¡Era phishing del SII!',items:['El dominio correcto del SII es <strong>sii.cl</strong>. El correo usaba <strong>documentos-legales.com</strong> con "sii.cl" como prefijo para confundir','El SII notifica por carta certificada o en el portal con tu RUT, nunca con ultimátums por correo','Regla: ante cualquier correo "urgente" del SII, entra directamente a www.sii.cl sin hacer clic']}
+    }
+  },
+  2:{
+    legit:{
+      ok:{t:'✅ ¡Correcto! Este era legítimo',items:['Dominio del remitente auténtico sin caracteres engañosos','Contenido esperado: confirmación de un pedido ya realizado','Sin urgencias, sin solicitud de credenciales, sin cambio de cuentas bancarias','Los datos de pago indican "los mismos de siempre" — no hay cambio sospechoso']},
+      err:{t:'❌ Este era legítimo — falsa alarma',items:['El dominio <strong>ferreteriaIndustrial.cl</strong> es correcto y auténtico','No hay enlace externo ni solicitud de credenciales','Es solo una confirmación de pedido con datos consistentes','A veces el exceso de precaución lleva a desconfiar de lo legítimo — calibra según el contexto']}
+    }
+  },
+  3:{
+    phish:{
+      ok:{t:'✅ ¡Correcto! Es fraude BEC (Business Email Compromise)',items:['El dominio real es <strong>distribuidora-norte-chile.cl</strong> — el atacante usó <strong>.cl.com</strong> que es un dominio distinto','Cambios de cuenta bancaria por "auditorías" son pretextos clásicos del fraude BEC','REGLA DE ORO: ante cualquier cambio de cuenta bancaria, llama al número de TU sistema, no al del correo','Este tipo de fraude en Chile genera pérdidas de millones de pesos cada año']},
+      err:{t:'❌ ¡Era fraude BEC! Uno de los más peligrosos',items:['El dominio <strong>.cl.com</strong> no existe — era un dominio falso muy similar al real','Nunca transferir a una cuenta nueva sin confirmar por teléfono con el número registrado en tu sistema','Los atacantes BEC investigan a sus víctimas antes — saben qué proveedores tienes y qué pedidos están en curso']}
+    }
+  },
+  4:{
+    legit:{
+      ok:{t:'✅ ¡Correcto! Era un aviso bancario legítimo',items:['El dominio <strong>@bancoestado.cl</strong> es el oficial del banco','Solo informa de una transacción sin pedir credenciales ni hacer clic en nada sospechoso','El correo indica explícitamente que el banco nunca pide claves','Entrega el número oficial para reportar problemas — no un número desconocido']},
+      err:{t:'❌ Este era legítimo — era un aviso de BancoEstado',items:['El dominio <strong>@bancoestado.cl</strong> es oficial y auténtico','No pedía ninguna acción ni credenciales — solo informaba de un cargo','La indicación de que "el banco nunca pide claves" es una señal de autenticidad','Ante cualquier duda sobre un cargo, entra directamente a www.bancoestado.cl']}
+    }
+  },
+  5:{
+    phish:{
+      ok:{t:'✅ ¡Correcto! Es phishing que suplanta a Microsoft',items:['Microsoft envía SOLO desde <strong>@microsoft.com</strong> — nunca desde dominios .info externos','El botón de verificación lleva a un sitio completamente diferente a microsoft.com','La amenaza de "pérdida total e irreversible" es manipulación psicológica clásica del phishing','Para verificar tu cuenta, entra directamente a <strong>portal.microsoft.com</strong> sin hacer clic en correos']},
+      err:{t:'❌ ¡Era phishing de Microsoft!',items:['El dominio <strong>microsoft365-accounts.info</strong> no pertenece a Microsoft — fue registrado recientemente por atacantes','Microsoft contacta desde <strong>@microsoft.com</strong> exclusivamente','Verifica siempre el estado de tu cuenta accediendo directamente a portal.microsoft.com','La urgencia extrema es siempre una señal de alerta — tómate 30 segundos para verificar el dominio']}
+    }
+  },
+  6:{
+    phish:{
+      ok:{t:'✅ ¡Excelente! Era typosquatting — el más difícil',items:['El dominio del atacante: <strong>ferreteriaIndustriaI.cl</strong> (con "I" mayúscula al final)','El dominio legítimo: <strong>ferreteriaIndustrial.cl</strong> (con "l" minúscula al final)','Este ataque se llama <strong>typosquatting u homógrafo</strong> — casi imposible de detectar a simple vista','El atacante sabía el número de pedido (lo obtuvo espiando comunicaciones anteriores) — por eso fue tan convincente','REGLA: ante cualquier solicitud de prepago urgente fuera del proceso normal, llama al número de TU sistema']},
+      err:{t:'❌ ¡Era el más difícil! Era typosquatting',items:['El dominio <strong>ferreteriaIndustriaI.cl</strong> tiene "I" mayúscula — vs el legítimo <strong>ferreteriaIndustrial.cl</strong> con "l" minúscula','Esta diferencia es casi invisible a simple vista — es un ataque de homógrafo o typosquatting','El atacante conocía el número de pedido porque estaba monitoreando las comunicaciones','Regla inviolable: ante prepago urgente fuera del proceso normal, SIEMPRE llama primero al número registrado']}
+    }
+  }
+};
+
+let scores={};
+function ans(n,chosen,correct){
+  if(scores[n]!==undefined)return;
+  const isOk=chosen===correct;
+  scores[n]=isOk;
+  const exp=EXP[n][chosen][isOk?'ok':'err'];
+  const res=document.getElementById('r'+n);
+  res.className='vres '+(isOk?'ok':'err');
+  res.style.display='block';
+  res.innerHTML=`<h4>${exp.t}</h4><ul>${exp.items.map(i=>`<li>${i}</li>`).join('')}</ul>`;
+  document.getElementById('c'+n).querySelectorAll('.vbtns button').forEach(b=>{b.style.opacity='.4';b.style.pointerEvents='none';});
+  updScore();
+}
+function updScore(){
+  const tot=Object.keys(scores).length;
+  const ok=Object.values(scores).filter(Boolean).length;
+  document.getElementById('sco').textContent=ok;
+  document.getElementById('swe').textContent=tot-ok;
+  document.getElementById('sto').textContent=tot+'/6';
+  document.getElementById('spb').style.width=(tot/6*100)+'%';
+}
+
+// ── TALLER B ──
+const BAD=['123','abc','password','contraseña','qwerty','admin','ferreteria','empresa','chile','enero','febrero','marzo','password','letmein','123456','654321','111111'];
+function togPwd(){const f=document.getElementById('pf');f.type=f.type==='password'?'text':'password';}
+function evPwd(v){
+  const len=v.length>=12,up=/[A-Z]/.test(v),lo=/[a-z]/.test(v),nu=/[0-9]/.test(v),sy=/[!@#$%^&*()\-_=+\[\]{}|;:,.<>?\/\\`~]/.test(v);
+  const vl=v.toLowerCase();
+  const np=!BAD.some(p=>vl.includes(p));
+  const nd=v.length<3||!['ferreteria','password','empresa','admin','chile','qwerty'].includes(vl);
+  setCk('ck-len',len);setCk('ck-up',up);setCk('ck-lo',lo);setCk('ck-nu',nu);setCk('ck-sy',sy);setCk('ck-pe',np);setCk('ck-di',nd);
+  const sc=[len,up,lo,nu,sy,np,nd].filter(Boolean).length;
+  const f=document.getElementById('sf'),l=document.getElementById('sl');
+  if(!v.length){f.style.width='0%';l.textContent='Escribe una contraseña para comenzar';l.style.color='var(--gray)';return;}
+  f.style.width=(sc/7*100)+'%';
+  if(sc<=2){f.style.background='var(--red)';l.style.color='var(--red)';l.textContent='Muy débil — cambiar de inmediato';}
+  else if(sc<=4){f.style.background='var(--amber)';l.style.color='var(--amber)';l.textContent='Débil — necesita mejoras importantes';}
+  else if(sc<=6){f.style.background='var(--lgold)';l.style.color='var(--gold)';l.textContent='Moderada — puede mejorar';}
+  else{f.style.background='var(--green)';l.style.color='var(--green)';l.textContent='✅ Fuerte — cumple todos los criterios';}
+}
+function setCk(id,pass){
+  const e=document.getElementById(id);
+  e.classList.remove('pass','fail');
+  e.querySelector('.ci').textContent=pass?'✅':'❌';
+  e.classList.add(pass?'pass':'fail');
+}
+
+// ── TALLER C ──
+let assets=[],si='',aid2=0;
+function selI(l){
+  si=l;
+  ['alto','medio','bajo'].forEach(x=>{
+    const b=document.getElementById('b'+x[0]);
+    b.className='impb'+(x===l?' s'+x[0]:'');
+  });
+}
+function addA(){
+  const n=document.getElementById('an').value.trim();
+  const t=document.getElementById('at').value;
+  const d=document.getElementById('aid').value.trim();
+  const c=document.getElementById('ac').value.trim();
+  const fe=document.getElementById('fe');
+  if(!n||!t||!d||!c||!si){fe.style.display='block';setTimeout(()=>fe.style.display='none',3000);return;}
+  fe.style.display='none';
+  aid2++;
+  assets.push({id:aid2,n,t,d,impact:si,c});
+  renderA();
+  document.getElementById('an').value='';
+  document.getElementById('at').value='';
+  document.getElementById('aid').value='';
+  document.getElementById('ac').value='';
+  si='';['alto','medio','bajo'].forEach(x=>document.getElementById('b'+x[0]).className='impb');
+}
+function delA(id){assets=assets.filter(a=>a.id!==id);renderA();}
+function clrA(){if(!assets.length)return;if(confirm('¿Limpiar todo el mapa?')){assets=[];renderA();}}
+function renderA(){
+  const ae=document.getElementById('ae'),at=document.getElementById('atable'),as=document.getElementById('asum'),ac=document.getElementById('ac2');
+  ac.textContent='('+assets.length+(assets.length===1?' activo':' activos')+')';
+  if(!assets.length){ae.style.display='block';at.style.display='none';as.style.display='none';return;}
+  ae.style.display='none';at.style.display='table';as.style.display='block';
+  const LB={alto:'🔴 ALTO',medio:'🟡 MEDIO',bajo:'🟢 BAJO'};
+  const PC={alto:'pa',medio:'pm',bajo:'pb'};
+  document.getElementById('atbody').innerHTML=assets.map((a,i)=>`
+    <tr style="animation:fadeIn .3s ease">
+      <td style="font-weight:900;color:var(--gold)">${String(i+1).padStart(2,'0')}</td>
+      <td><strong>${a.n}</strong><br><span style="font-size:12px;color:var(--gray)">${a.d}</span></td>
+      <td style="font-size:12px;color:var(--dgray)">${a.t}</td>
+      <td><span class="pill ${PC[a.impact]}">${LB[a.impact]}</span></td>
+      <td style="font-size:13px;color:var(--dgray)">${a.c}</td>
+      <td><button class="bdel" onclick="delA(${a.id})">🗑</button></td>
+    </tr>`).join('');
+  document.getElementById('sa').textContent=assets.filter(a=>a.impact==='alto').length;
+  document.getElementById('sm').textContent=assets.filter(a=>a.impact==='medio').length;
+  document.getElementById('sb').textContent=assets.filter(a=>a.impact==='bajo').length;
+}
+
+// ── LOADER ──
+window.addEventListener('load', function(){
+  setTimeout(function(){
+    document.getElementById('loader').classList.add('hide');
+    setTimeout(function(){document.getElementById('loader').style.display='none';},500);
+  }, 800);
+});
+
+
+// ── PASSWORD GATE ──
+// Hash SHA-256 de la clave de acceso. Para cambiarla, calcula el nuevo hash con:
+// echo -n "TU_NUEVA_CLAVE" | shasum -a 256   (Mac/Linux)
+// o usa https://emn178.github.io/online-tools/sha256.html
+const PWG_HASH = "aa13fb57963fd3f87647aacd0e306379bcd5b18a86aa1f0474ff52a7ea8d1c93";
+
+async function sha256(msg){
+  const enc = new TextEncoder().encode(msg);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+async function checkPwGate(){
+  const input = document.getElementById('pwg-input');
+  const err = document.getElementById('pwg-error');
+  const val = input.value.trim();
+  if(!val){ showPwgError(); return; }
+  const hash = await sha256(val);
+  if(hash === PWG_HASH){
+    sessionStorage.setItem('pwg_ok','1');
+    document.getElementById('pwgate').classList.add('hidden');
+  } else {
+    showPwgError();
+  }
+}
+function showPwgError(){
+  const input = document.getElementById('pwg-input');
+  const err = document.getElementById('pwg-error');
+  err.classList.add('show');
+  input.classList.add('shake');
+  input.value='';
+  setTimeout(()=>input.classList.remove('shake'),400);
+}
+document.getElementById('pwg-input').addEventListener('keydown', function(e){
+  if(e.key === 'Enter') checkPwGate();
+});
+// Si ya se autenticó en esta sesión del navegador, no pedir de nuevo
+if(sessionStorage.getItem('pwg_ok') === '1'){
+  document.getElementById('pwgate').classList.add('hidden');
+}
+
+</script>
+</body>
+</html>
